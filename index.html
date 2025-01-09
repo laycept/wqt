@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="./hydra-2.1.5-pro.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <!-- 添加到主屏幕后，全屏显示 -->
+    <meta name="apple-touch-fullscreen" content="YES" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- iphone 运行在全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">    <title>js调用Demo</title>
+</head>
+<h2>js调用自定义插件Demo</h2>
+<body>
+    <div class="btn" onclick="Click('location')">获取地理位置</div>
+</body>
+<script>
+
+    function Click(e){
+        if (e == 'location') {
+            croods.customPlugin({
+                action: 'MediaPlugin.getLocation',
+                params: {
+
+                },
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
+    }
+
+
+</script>
+<style>
+    body {
+        padding: 10vw;
+    }
+    .btn {
+        width: 80vw;
+        height: 50px;
+        border-radius: 10px;
+        background: #096AE6;
+        color: #fff;
+        line-height: 50px;
+        text-align: center;
+        font-size: 20px;
+        margin-top: 20px;
+    }
+    .other{
+        width: 80vw;
+        display: flex;
+        padding: 10px 0;
+        align-items: start;
+        height: 40px;
+    }
+    .other  input {
+        width: 55vw;
+        margin-left: auto;
+    }
+    .other text{
+        width: 20vw;
+        text-align: justify;
+    }
+    .other text::after{
+        width: 100%;
+        content: '';
+        display: inline-block;
+    }
+</style>
+
+
+</html>
