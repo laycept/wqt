@@ -13,14 +13,31 @@
 </head>
 <h2>js调用自定义插件Demo</h2>
 <body>
-    <div class="btn" onclick="Click('location')">获取地理位置</div>
+    <div class="btn" onclick="Click('location')">获取地理位置（旧）</div>
+    <div class="btn" onclick="Click('locationInfo')">获取地理位置信息（新）</div>
 </body>
 <script>
 
     function Click(e){
         if (e == 'location') {
+            // 获取基础经纬度信息，逆地理位置编码信息可能空白。WGS84坐标系
             croods.customPlugin({
                 action: 'MediaPlugin.getLocation',
+                params: {
+
+                },
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
+        if (e == 'locationInfo') {
+            // 速度稍慢，获取经纬度信息，以及逆地理位置编码信息。GCJ02坐标系
+            croods.customPlugin({
+                action: 'MediaPlugin.getLocationInfo',
                 params: {
 
                 },
