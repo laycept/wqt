@@ -15,6 +15,10 @@
 <body>
     <div class="btn" onclick="Click('location')">获取地理位置（旧）</div>
     <div class="btn" onclick="Click('locationInfo')">获取地理位置信息（新）</div>
+    <div class="btn" onclick="Click('takePhoto')">拍照</div>
+    <div class="btn" onclick="Click('chosePhotos')">选择图片</div>
+    <img id="img" src="" style="width: 80vw;" >
+    <div id="imgs"></div>
 </body>
 <script>
 
@@ -42,6 +46,43 @@
 
                 },
                 success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
+        if (e == 'takePhoto') {
+            // 拍照
+            croods.customPlugin({
+                action: 'MediaPlugin.openCamera',
+                params: {
+                    quality:'high',//照片质量，可选值：low, normal, high, origin
+                },
+                success: function (res) {
+                    let imgObj =  res[0];
+                    document.getElementById('img').src = 'data:' + imgObj.type + ';base64,' + imgObj.file;
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
+        if (e == 'chosePhotos') {
+            // 选择图片
+            croods.customPlugin({
+                action: 'MediaPlugin.choosePhotosFromLibrary',
+                params: {
+                    count: 4, // 图片数量，最大 9
+                    quality:'high' // 图片质量，可选值：low, normal, high, origin
+                },
+                success: function (res) {
+                    for (let i = 0; i < res.length; i++) {
+                        const imgObj = res[i];
+                        document.getElementById('imgs').innerHTML += '<img src="data:' + imgObj.type + ';base64,' + imgObj.file + '" style="width: 20vw;">'
+                    }
                     alert(JSON.stringify(res))
                 },
                 fail: function (msg) {
