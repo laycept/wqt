@@ -17,7 +17,7 @@
     <div class="btn" onclick="Click('locationInfo')">获取地理位置信息（新）</div>
     <div class="btn" onclick="Click('takePhoto')">拍照</div>
     <div class="btn" onclick="Click('chosePhotos')">选择图片</div>
-    <div class="btn" onclick="Click('test')">测试</div>
+    <div class="btn" onclick="Click('scan')"> 扫码 </div>
     <img id="img" src="" style="width: 80vw;" >
     <div id="imgs"></div>
 </body>
@@ -91,19 +91,20 @@
                 }
             })
         }
-        if (e == 'test') {
+        if (e = 'scan') {
+            // 扫码
             croods.customPlugin({
-                action: 'NavigationPlugin.openApp',
+                action: 'ServicePermissionPlugin.scan',
                 params: {
-                    url:'https://www.ahzwfw.gov.cn/otd-hub-h5/static/附件1：企业数据填报“一件事”社保信息填报指南.pdf'
                 },
                 success: function (res) {
-                    console.log(res)
+                    alert(JSON.stringify(res))
                 },
                 fail: function (msg) {
                     console.log(msg)
                 }
             })
+            
         }
     }
 
