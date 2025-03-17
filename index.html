@@ -18,6 +18,7 @@
     <div class="btn" onclick="Click('takePhoto')">拍照</div>
     <div class="btn" onclick="Click('chosePhotos')">选择图片</div>
     <div class="btn" onclick="Click('scan')"> 扫码 </div>
+    <div class="btn" onclick="Click('open')"> 外部打开 </div>
     <img id="img" src="" style="width: 80vw;" >
     <div id="imgs"></div>
 </body>
@@ -104,7 +105,20 @@
                     console.log(msg)
                 }
             })
-            
+        }
+        if (e == 'open') {
+            // 外部打开
+            croods.customPlugin({
+                action: 'NavigationPlugin.openApp',
+                params: {
+                    url:'https://www.baidu.com'
+                },
+                success: function (res) {
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
         }
     }
 
