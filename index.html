@@ -19,6 +19,18 @@
     <div class="btn" onclick="Click('chosePhotos')">选择图片</div>
     <div class="btn" onclick="Click('scan')"> 扫码 </div>
     <div class="btn" onclick="Click('open')"> 外部打开 </div>
+    <div class="btn" onclick="Click('startFos')"> 活体检测 </div>
+    <div class="other">
+        <text>用户名</text>
+        <input type="text" id="userName" placeholder="请输入用户名">
+    </div>
+    <div class="other">
+        <text>签名数据</text>
+        <input type="text" id="signData" placeholder="请输入签名数据">
+    </div>
+    <div class="btn" onclick="Click('isReged')"> 判断是否注册 </div>
+    <div class="btn" onclick="Click('regOperation')"> 注册 </div>
+    <div class="btn" onclick="Click('authOperation')"> 验证 </div>
     <img id="img" src="" style="width: 80vw;" >
     <div id="imgs"></div>
 </body>
@@ -107,7 +119,7 @@
             })
         }
         if (e == 'open') {
-            // 外部打开
+            // 扫码
             croods.customPlugin({
                 action: 'NavigationPlugin.openApp',
                 params: {
@@ -117,6 +129,89 @@
                 },
                 fail: function (msg) {
                     console.log(msg)
+                }
+            })
+        }
+        if (e == 'isReged') {
+            // 判断是否注册
+            let userName = document.getElementById('userName').value;
+            if (!userName) {
+                alert('请输入用户名');
+                return;
+            }
+            croods.customPlugin({
+                action: 'DirectPlugin.isReged',
+                params: {
+                    userName: userName
+                },
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                    alert('失败: ' + JSON.stringify(msg))
+                }
+            })
+        }
+        if (e == 'regOperation') {
+            // 注册
+            let userName = document.getElementById('userName').value;
+            if (!userName) {
+                alert('请输入用户名');
+                return;
+            }
+            croods.customPlugin({
+                action: 'DirectPlugin.regOperation',
+                params: {
+                    userName: userName
+                },
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                    alert('失败: ' + JSON.stringify(msg))
+                }
+            })
+        }
+        if (e == 'authOperation') {
+            // 验证
+            let userName = document.getElementById('userName').value;
+            let signData = document.getElementById('signData').value;
+            if (!userName) {
+                alert('请输入用户名');
+                return;
+            }
+            if (!signData) {
+                alert('请输入签名数据');
+                return;
+            }
+            croods.customPlugin({
+                action: 'DirectPlugin.authOperation',
+                params: {
+                    userName: userName,
+                    signData: signData
+                },
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                    alert('失败: ' + JSON.stringify(msg))
+                }
+            })
+        }
+        if (e == 'startFos') {
+            // 活体检测
+            croods.customPlugin({
+                action: 'DirectPlugin.startFos',
+                params: {},
+                success: function (res) {
+                    alert(JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                    alert('失败: ' + JSON.stringify(msg))
                 }
             })
         }
