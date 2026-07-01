@@ -13,13 +13,14 @@
 </head>
 <h2>js调用自定义插件Demo</h2>
 <body>
+    <div class="btn" onclick="Click('jumpUrl')">跳转测试</div>
     <div class="btn" onclick="Click('location')">获取地理位置（旧）</div>
     <div class="btn" onclick="Click('locationInfo')">获取地理位置信息（新）</div>
     <div class="btn" onclick="Click('takePhoto')">拍照</div>
     <div class="btn" onclick="Click('chosePhotos')">选择图片</div>
     <div class="btn" onclick="Click('scan')"> 扫码 </div>
     <div class="btn" onclick="Click('open')"> 外部打开 </div>
-    <div class="btn" onclick="Click('startFos')"> 活体检测 </div>
+    <!-- <div class="btn" onclick="Click('startFos')"> 活体检测 </div>
     <div class="other">
         <text>用户名</text>
         <input type="text" id="userName" placeholder="请输入用户名">
@@ -28,15 +29,40 @@
         <text>签名数据</text>
         <input type="text" id="signData" placeholder="请输入签名数据">
     </div>
-    <div class="btn" onclick="Click('isReged')"> 判断是否注册 </div>
-    <div class="btn" onclick="Click('regOperation')"> 注册 </div>
-    <div class="btn" onclick="Click('authOperation')"> 验证 </div>
+    <div class="btn" onclick="Click('authOperation')"> 验证 </div> -->
+    <div class="other">
+        <text>fvtoken</text>
+        <input type="text" id="fvtoken" placeholder="人脸 fvtoken（后端下发）">
+    </div>
+    <div class="other">
+        <text>key</text>
+        <input type="text" id="faceKey" placeholder="业务 key（可空）">
+    </div>
+    <div class="other">
+        <text>type</text>
+        <input type="text" id="faceType" placeholder="认证类型 type（可空）">
+    </div>
+    <div class="btn" onclick="Click('faceConfirm')"> 人脸认证（faceConfirmParams） </div>
+    <div id="faceResult" style="width:80vw;margin-top:12px;word-break:break-all;font-size:14px;color:#333;"></div>
     <img id="img" src="" style="width: 80vw;" >
     <div id="imgs"></div>
 </body>
 <script>
 
     function Click(e){
+        if (e === 'jumpUrl') {
+            croods.customPlugin({
+                action: 'UtilsPlugin.openOtherView',
+                params: {
+                    url:'https://www.baidu.com'
+                },
+                success: function (res) {
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
         if (e == 'location') {
             // 获取基础经纬度信息，逆地理位置编码信息可能空白。WGS84坐标系
             croods.customPlugin({
@@ -212,6 +238,48 @@
                 fail: function (msg) {
                     console.log(msg)
                     alert('失败: ' + JSON.stringify(msg))
+                }
+            })
+        }
+        if (e == 'faceConfirm') {
+            // 人脸认证插件验证。
+            // 注意：原生成功/失败/取消三态都走 success 回调（返回码恒为 10000 IFLY_OK），
+            // 必须靠 res.faceState 区分，不能用 fail 分支判断认证结果。
+            //   res.faceState === 'success' → 认证成功（res 里还带后端下发的 accessToken 等业务字段）
+            //   res.faceState === 'failed'  → 认证失败（认证方式不可用 / 分流接口异常）
+            //   res.faceState === 'cancel'  → 用户手动返回取消
+            // 活检失败 / 校验不过等「可重试」场景不回调，用户重试成功给 success、放弃返回给 cancel。
+            croods.customPlugin({
+                action: 'WstFacePlugin.faceConfirmParams',
+                params: {
+                    fvtoken: document.getElementById('fvtoken').value,
+                    key: document.getElementById('faceKey').value,
+                    type: document.getElementById('faceType').value
+                },
+                success: function (res) {
+                    console.log(JSON.stringify(res));
+                    var state = res && res.faceState;
+                    var tip;
+                    if (state === 'success') {
+                        tip = '✅ 认证成功';
+                    } else if (state === 'failed') {
+                        tip = '❌ 认证失败';
+                    } else if (state === 'cancel') {
+                        tip = '⚠️ 用户取消';
+                    } else {
+                        tip = '❓ 未知状态（无 faceState）';
+                    }
+                    document.getElementById('faceResult').innerHTML =
+                        '<b>' + tip + '</b><br>faceState: ' + JSON.stringify(state) +
+                        '<br>完整回调: ' + JSON.stringify(res);
+                    alert(tip + '\n' + JSON.stringify(res));
+                },
+                fail: function (msg) {
+                    // 正常情况下人脸插件不会走这里；走到这里通常是插件未注册 / 参数错误。
+                    console.log(msg)
+                    document.getElementById('faceResult').innerHTML =
+                        '<b style="color:#c00">调用失败</b><br>' + JSON.stringify(msg);
+                    alert('调用失败: ' + JSON.stringify(msg))
                 }
             })
         }
