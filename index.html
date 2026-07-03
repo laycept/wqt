@@ -44,6 +44,8 @@
     </div>
     <div class="btn" onclick="Click('faceConfirm')"> 人脸认证（faceConfirmParams） </div>
     <div id="faceResult" style="width:80vw;margin-top:12px;word-break:break-all;font-size:14px;color:#333;"></div>
+    <div class="btn" onclick="Click('isNetworkConnected')"> 是否有网络（isNetworkConnected） </div>
+    <div id="networkResult" style="width:80vw;margin-top:12px;word-break:break-all;font-size:14px;color:#333;"></div>
     <img id="img" src="" style="width: 80vw;" >
     <div id="imgs"></div>
 </body>
@@ -278,6 +280,25 @@
                     // 正常情况下人脸插件不会走这里；走到这里通常是插件未注册 / 参数错误。
                     console.log(msg)
                     document.getElementById('faceResult').innerHTML =
+                        '<b style="color:#c00">调用失败</b><br>' + JSON.stringify(msg);
+                    alert('调用失败: ' + JSON.stringify(msg))
+                }
+            })
+        }
+        if (e == 'isNetworkConnected') {
+            // 是否有网络：res.result === 1 有网络，0 无网络
+            croods.customPlugin({
+                action: 'UtilsPlugin.isNetworkConnected',
+                params: {},
+                success: function (res) {
+                    var tip = (res && res.result === 1) ? '✅ 有网络' : '❌ 无网络';
+                    document.getElementById('networkResult').innerHTML =
+                        '<b>' + tip + '</b><br>完整回调: ' + JSON.stringify(res);
+                    alert(tip + '\n' + JSON.stringify(res))
+                },
+                fail: function (msg) {
+                    console.log(msg)
+                    document.getElementById('networkResult').innerHTML =
                         '<b style="color:#c00">调用失败</b><br>' + JSON.stringify(msg);
                     alert('调用失败: ' + JSON.stringify(msg))
                 }
